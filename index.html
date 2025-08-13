@@ -8,10 +8,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&display=swap');
         
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #f8fafc;
+        }
+        
+        .bengali {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        
+        .hindi {
+            font-family: 'Hind', sans-serif;
         }
         
         .hero-gradient {
@@ -35,6 +45,92 @@
                 transform: translateY(-10px);
             }
         }
+        
+        .video-overlay {
+            background: rgba(0, 0, 0, 0.2);
+            transition: opacity 0.3s;
+        }
+        
+        video::-webkit-media-controls {
+            display: none;
+        }
+        
+        video[controls] + .video-overlay {
+            display: none;
+        }
+        
+        .video-play-button {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .aspect-w-16 {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .aspect-w-16 video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        #videoOverlay {
+            cursor: pointer;
+        }
+        
+        @media (max-width: 640px) {
+            .video-play-button {
+                width: 60px;
+                height: 60px;
+            }
+            
+            #playButton {
+                padding: 2.5rem;
+            }
+            
+            #playButton i {
+                font-size: 3rem;
+            }
+        }
+        
+        .language-selector {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 120px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 4px;
+        }
+        
+        .language-dropdown a {
+            color: black;
+            padding: 8px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .language-dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .language-selector:hover .language-dropdown {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -45,15 +141,29 @@
                 <div class="flex items-center space-x-4">
                     <div class="flex items-center">
                         <i class="fas fa-baseball-ball text-blue-700 text-2xl mr-2"></i>
-                        <span class="font-bold text-blue-700 text-xl">Gully Premier League</span>
+                        <span class="font-bold text-blue-700 text-xl" data-en="Gully Premier League" data-bn="গালি প্রিমিয়ার লিগ" data-hi="गली प्रीमियर लीग">Gully Premier League</span>
                     </div>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="text-blue-700 font-medium">Home</a>
-                    <a href="#teams" class="text-gray-600 hover:text-blue-700 transition">Teams</a>
-                    <a href="#schedule" class="text-gray-600 hover:text-blue-700 transition">Schedule</a>
-                    <a href="#rules" class="text-gray-600 hover:text-blue-700 transition">Rules</a>
-                    <a href="#register" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Register Now</a>
+                    <a href="#home" class="text-blue-700 font-medium" data-en="Home" data-bn="হোম" data-hi="होम">Home</a>
+                    <a href="#teams" class="text-gray-600 hover:text-blue-700 transition" data-en="Teams" data-bn="দল" data-hi="टीमें">Teams</a>
+                    <a href="#schedule" class="text-gray-600 hover:text-blue-700 transition" data-en="Schedule" data-bn="সময়সূচী" data-hi="शेड्यूल">Schedule</a>
+                    <a href="#rules" class="text-gray-600 hover:text-blue-700 transition" data-en="Rules" data-bn="নিয়ম" data-hi="नियम">Rules</a>
+                    <a href="#register" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition" data-en="Register Now" data-bn="এখনই নিবন্ধন করুন" data-hi="अभी पंजीकरण करें">Register Now</a>
+                    
+                    <!-- Language Selector -->
+                    <div class="language-selector ml-4">
+                        <button class="flex items-center text-gray-700">
+                            <i class="fas fa-globe mr-1"></i>
+                            <span class="language-label" data-en="English" data-bn="ইংরেজি" data-hi="अंग्रेज़ी">English</span>
+                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        <div class="language-dropdown">
+                            <a href="#" onclick="changeLanguage('en')">English</a>
+                            <a href="#" onclick="changeLanguage('bn')">বাংলা (Bengali)</a>
+                            <a href="#" onclick="changeLanguage('hi')">हिन्दी (Hindi)</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="md:hidden">
                     <button class="mobile-menu-button p-2 focus:outline-none">
@@ -68,11 +178,11 @@
     <section id="home" class="hero-gradient text-white py-20">
         <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center">
             <div class="md:w-1/2 mb-10 md:mb-0">
-                <h1 class="text-4xl md:text-5xl font-bold mb-6">Gully Cricket Championship 2025</h1>
-                <p class="text-xl mb-8">Where street legends are born! Join the most exciting gully cricket tournament in your city.</p>
+                <h1 class="text-4xl md:text-5xl font-bold mb-6" data-en="Gully Cricket Championship 2025" data-bn="গালি ক্রিকেট চ্যাম্পিয়নশিপ ২০২৫" data-hi="गली क्रिकेट चैम्पियनशिप 2025">Gully Cricket Championship 2025</h1>
+                <p class="text-xl mb-8" data-en="Where street legends are born! Join the most exciting gully cricket tournament in your city." data-bn="যেখানে রাস্তার কিংবদন্তি জন্ম নেয়! আপনার শহরের সবচেয়ে উত্তেজনাপূর্ণ গালি ক্রিকেট টুর্নামেন্টে যোগ দিন।" data-hi="जहां गली के दिग्गज पैदा होते हैं! अपने शहर के सबसे रोमांचक गली क्रिकेट टूर्नामेंट में शामिल हों।">Where street legends are born! Join the most exciting gully cricket tournament in your city.</p>
                 <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="#register" class="bg-white text-blue-700 px-6 py-3 rounded-md font-bold text-center hover:bg-gray-100 transition">Register Your Team</a>
-                    <a href="#schedule" class="border-2 border-white text-white px-6 py-3 rounded-md font-bold text-center hover:bg-white hover:text-blue-700 transition">View Schedule</a>
+                    <a href="#register" class="bg-white text-blue-700 px-6 py-3 rounded-md font-bold text-center hover:bg-gray-100 transition" data-en="Register Your Team" data-bn="আপনার দল নিবন্ধন করুন" data-hi="अपनी टीम पंजीकृत करें">Register Your Team</a>
+                    <a href="#schedule" class="border-2 border-white text-white px-6 py-3 rounded-md font-bold text-center hover:bg-white hover:text-blue-700 transition" data-en="View Schedule" data-bn="সময়সূচী দেখুন" data-hi="शेड्यूल देखें">View Schedule</a>
                 </div>
             </div>
             <div class="md:w-1/2 flex justify-center">
@@ -85,7 +195,7 @@
     <section class="py-16 bg-white">
         <div class="max-w-6xl mx-auto px-4">
             <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">About The Tournament</h2>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4" data-en="About The Tournament" data-bn="টুর্নামেন্ট সম্পর্কে" data-hi="टूर्नामेंट के बारे में">About The Tournament</h2>
                 <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
             </div>
             <div class="grid md:grid-cols-3 gap-8">
@@ -93,22 +203,68 @@
                     <div class="text-blue-600 text-4xl mb-4">
                         <i class="fas fa-trophy"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-800">Exciting Prizes</h3>
-                    <p class="text-gray-600">Win cash prizes and foods.</p>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800" data-en="Exciting Prizes" data-bn="উত্তেজনাপূর্ণ পুরস্কার" data-hi="रोमांचक पुरस्कार">Exciting Prizes</h3>
+                    <p class="text-gray-600" data-en="Win cash prizes and foods." data-bn="নগদ পুরস্কার এবং খাবার জিতুন।" data-hi="नकद पुरस्कार और भोजन जीतें।">Win cash prizes and foods.</p>
                 </div>
                 <div class="bg-gray-50 p-6 rounded-lg shadow-md">
                     <div class="text-blue-600 text-4xl mb-4">
                         <i class="fas fa-users"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-800">3 Teams Battle</h3>
-                    <p class="text-gray-600">3 competitive teams will play in a knockout format to claim the gully cricket supremacy.</p>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800" data-en="3 Teams Battle" data-bn="৩ দলের লড়াই" data-hi="3 टीमों की लड़ाई">3 Teams Battle</h3>
+                    <p class="text-gray-600" data-en="3 competitive teams will play in a knockout format to claim the gully cricket supremacy." data-bn="৩টি প্রতিযোগিতামূলক দল নকআউট ফরম্যাটে খেলবে গালি ক্রিকেটের আধিপত্য দাবি করতে।" data-hi="3 प्रतिस्पर्धी टीमें गली क्रिकेट की सर्वोच्चता का दावा करने के लिए नॉकआउट फॉर्मेट में खेलेंगी।">3 competitive teams will play in a knockout format to claim the gully cricket supremacy.</p>
                 </div>
                 <div class="bg-gray-50 p-6 rounded-lg shadow-md">
                     <div class="text-blue-600 text-4xl mb-4">
                         <i class="fas fa-map-marker-alt"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-800">Local Ground</h3>
-                    <p class="text-gray-600">Matches will be played at the Street infront of SUBHAM, SUMIT's house, with proper pitch preparation.</p>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800" data-en="Local Ground" data-bn="স্থানীয় মাঠ" data-hi="स्थानीय मैदान">Local Ground</h3>
+                    <p class="text-gray-600" data-en="Matches will be played at the Street infront of SUBHAM, SUMIT's house, with proper pitch preparation." data-bn="ম্যাচগুলি সুভম, সুমিতের বাড়ির সামনের রাস্তায় সঠিক পিচ প্রস্তুতির সাথে খেলা হবে।" data-hi="मैच सुभम, सुमित के घर के सामने सड़क पर उचित पिच तैयारी के साथ खेले जाएंगे।">Matches will be played at the Street infront of SUBHAM, SUMIT's house, with proper pitch preparation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Section -->
+    <section class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4" data-en="Captain Selection Ceremony" data-bn="ক্যাপ্টেন নির্বাচন অনুষ্ঠান" data-hi="कप्तान चयन समारोह">Captain Selection Ceremony</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
+                <p class="text-gray-600 mt-4 max-w-2xl mx-auto" data-en="Watch the exciting moment when team captains were chosen by spinning wheel!" data-bn="দলগুলির অধিনায়কদের ঘূর্ণায়মান চাকা দ্বারা নির্বাচিত হওয়ার উত্তেজনাপূর্ণ মুহূর্তটি দেখুন!" data-hi="टीम कप्तानों को स्पिनिंग व्हील द्वारा चुने जाने का रोमांचक क्षण देखें!">Watch the exciting moment when team captains were chosen by spinning wheel!</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-xl shadow-xl overflow-hidden max-w-4xl mx-auto">
+                <!-- Video Container -->
+                <div class="relative aspect-w-16 aspect-h-9">
+                    <!-- Video with multiple source formats for compatibility -->
+                    <video id="captainVideo" controls class="w-full h-full object-cover" poster="https://images.unsplash.com/photo-1543351611-58f69d7c1781?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80">
+                        <source src="ss_recording.mp4" type="video/mp4">
+                        <source src="ss_recording.webm" type="video/webm">
+                        <span data-en="Your browser does not support the video tag." data-bn="আপনার ব্রাউজার ভিডিও ট্যাগ সমর্থন করে না।" data-hi="आपका ब्राउज़र वीडियो टैग का समर्थन नहीं करता है।">Your browser does not support the video tag.</span>
+                    </video>
+                    
+                    <!-- Play button overlay -->
+                    <div id="videoOverlay" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 transition-opacity duration-300">
+                        <button id="playButton" class="bg-blue-600 bg-opacity-80 rounded-full p-4 hover:bg-opacity-100 transition transform hover:scale-110">
+                            <i class="fas fa-play text-white text-4xl"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Video Details -->
+                <div class="p-6 md:p-8">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800" data-en="Spinning Wheel Selection" data-bn="ঘূর্ণায়মান চাকা নির্বাচন" data-hi="स्पिनिंग व्हील चयन">Spinning Wheel Selection</h3>
+                            <p class="text-gray-600" data-en="Recorded on: August 13, 2025" data-bn="ধারণকৃত: ১৩ আগস্ট, ২০২৫" data-hi="रिकॉर्ड किया गया: 13 अगस्त, 2025">Recorded on: August 13, 2025</p>
+                        </div>
+                        <div class="mt-4 md:mt-0">
+                            <a href="ss_recording.mp4" download class="inline-flex items-center text-blue-600 hover:text-blue-800 transition">
+                                <i class="fas fa-download mr-2"></i>
+                                <span data-en="Download Video" data-bn="ভিডিও ডাউনলোড করুন" data-hi="वीडियो डाउनलोड करें">Download Video</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -118,7 +274,7 @@
     <section id="teams" class="py-16 bg-gray-50">
         <div class="max-w-6xl mx-auto px-4">
             <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">Participating Teams</h2>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4" data-en="Participating Teams" data-bn="অংশগ্রহণকারী দলগুলি" data-hi="भाग लेने वाली टीमें">Participating Teams</h2>
                 <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
             </div>
             <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
@@ -127,21 +283,21 @@
                         <i class="fas fa-bolt text-blue-600 text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-center mb-2">Thunder Strikers</h3>
-                    <p class="text-gray-600 text-center">Captain: Sumit Gupta</p>
+                    <p class="text-gray-600 text-center" data-en="Captain: Sumit Gupta" data-bn="অধিনায়ক: সুমিত গুপ্ত" data-hi="कप्तान: सुमित गुप्ता">Captain: Sumit Gupta</p>
                 </div>
                 <div class="team-card bg-white p-6 rounded-lg shadow-md transition duration-300">
                     <div class="w-24 h-24 bg-red-100 rounded-full mx-auto mb-4 flex items-center justify-center">
                         <i class="fas fa-fire text-red-600 text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-center mb-2">Fire Hawks</h3>
-                    <p class="text-gray-600 text-center">Captain: Sourav Das</p>
+                    <p class="text-gray-600 text-center" data-en="Captain: Shubham Gupta" data-bn="অধিনায়ক: শুভম গুপ্ত" data-hi="कप्तान: शुभम गुप्ता">Captain: Shubham Gupta</p>
                 </div>
                 <div class="team-card bg-white p-6 rounded-lg shadow-md transition duration-300">
                     <div class="w-24 h-24 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
                         <i class="fas fa-leaf text-green-600 text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-center mb-2">Green Warriors</h3>
-                    <p class="text-gray-600 text-center">Captain: NOT DECIDED</p>
+                    <p class="text-gray-600 text-center" data-en="Captain: Shivam" data-bn="অধিনায়ক: শিবম" data-hi="कप्तान: शिवम">Captain: Shivam</p>
                 </div>
             </div>
         </div>
@@ -151,47 +307,18 @@
     <section id="schedule" class="py-16 bg-white">
         <div class="max-w-6xl mx-auto px-4">
             <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">Tournament Schedule</h2>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4" data-en="Tournament Schedule" data-bn="টুর্নামেন্ট সময়সূচী" data-hi="टूर्नामेंट शेड्यूल">Tournament Schedule</h2>
                 <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
                     <thead class="bg-gray-800 text-white">
-                        <!-- <tr>
-                            <th class="py-3 px-4 text-left">Date</th>
-                            <th class="py-3 px-4 text-left">Match</th>
-                            <th class="py-3 px-4 text-left">Time</th>
-                            <th class="py-3 px-4 text-left">Venue</th>
-                        </tr> -->
                         <tr>
-                            <th class="py-3 px-4 text-left">To Be Announced</th>
+                            <th class="py-3 px-4 text-left" data-en="To Be Announced" data-bn="ঘোষণা করা হবে" data-hi="घोषित किया जाएगा">To Be Announced</th>
                         </tr>
                     </thead>
                     <tbody class="text-gray-700">
-                        <!-- <tr class="hover:bg-gray-50">
-                            <td class="py-3 px-4 border-b">15 Oct 2023</td>
-                            <td class="py-3 px-4 border-b">Thunder Strikers vs Fire Hawks</td>
-                            <td class="py-3 px-4 border-b">4:00 PM</td>
-                            <td class="py-3 px-4 border-b">Community Ground</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50">
-                            <td class="py-3 px-4 border-b">15 Oct 2023</td>
-                            <td class="py-3 px-4 border-b">Green Warriors vs Sunrisers</td>
-                            <td class="py-3 px-4 border-b">6:00 PM</td>
-                            <td class="py-3 px-4 border-b">Community Ground</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50">
-                            <td class="py-3 px-4 border-b">16 Oct 2023</td>
-                            <td class="py-3 px-4 border-b">Night Riders vs Defenders</td>
-                            <td class="py-3 px-4 border-b">4:00 PM</td>
-                            <td class="py-3 px-4 border-b">Community Ground</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50">
-                            <td class="py-3 px-4 border-b">16 Oct 2023</td>
-                            <td class="py-3 px-4 border-b">Super Stars vs Power Hitters</td>
-                            <td class="py-3 px-4 border-b">6:00 PM</td>
-                            <td class="py-3 px-4 border-b">Community Ground</td>
-                        </tr> -->
+                        <!-- Empty as schedule is TBA -->
                     </tbody>
                 </table>
             </div>
@@ -202,57 +329,57 @@
     <section id="rules" class="py-16 bg-gray-50">
         <div class="max-w-6xl mx-auto px-4">
             <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">Tournament Rules</h2>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4" data-en="Tournament Rules" data-bn="টুর্নামেন্ট নিয়ম" data-hi="टूर्नामेंट नियम">Tournament Rules</h2>
                 <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
             </div>
             <div class="grid md:grid-cols-2 gap-8">
                 <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold mb-4 text-blue-700">General Rules</h3>
+                    <h3 class="text-xl font-bold mb-4 text-blue-700" data-en="General Rules" data-bn="সাধারণ নিয়ম" data-hi="सामान्य नियम">General Rules</h3>
                     <ul class="space-y-3">
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Each team must have 3-4 players</span>
+                            <span data-en="Each team must have 3-4 players" data-bn="প্রতিটি দলে ৩-৪ জন খেলোয়াড় থাকতে হবে" data-hi="प्रत्येक टीम में 3-4 खिलाड़ी होने चाहिए">Each team must have 3-4 players</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Matches will be 4 overs per side</span>
+                            <span data-en="Matches will be 6 overs per side" data-bn="ম্যাচগুলি প্রতি পক্ষে ৬ ওভারের হবে" data-hi="मैच प्रति पक्ष 6 ओवर के होंगे">Matches will be 6 overs per side</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>One bounce one hand catch out is valid</span>
+                            <span data-en="One bounce one hand catch out is valid" data-bn="এক বাউন্স এক হ্যান্ড ক্যাচ আউট বৈধ" data-hi="एक बाउंस एक हाथ कैच आउट वैध है">One bounce one hand catch out is valid</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>No LBW rule applies</span>
+                            <span data-en="No LBW rule applies" data-bn="এলবিডব্লিউ নিয়ম প্রযোজ্য নয়" data-hi="एलबीडब्ल्यू नियम लागू नहीं होता">No LBW rule applies</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Maximum 2 overs per bowler</span>
+                            <span data-en="Maximum 2 overs per bowler" data-bn="প্রতি বোলার সর্বোচ্চ ২ ওভার" data-hi="प्रति गेंदबाज अधिकतम 2 ओवर">Maximum 2 overs per bowler</span>
                         </li>
                     </ul>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold mb-4 text-blue-700">Code of Conduct</h3>
+                    <h3 class="text-xl font-bold mb-4 text-blue-700" data-en="Code of Conduct" data-bn="আচরণবিধি" data-hi="आचार संहिता">Code of Conduct</h3>
                     <ul class="space-y-3">
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Respect all players, umpires, and organizers</span>
+                            <span data-en="Respect all players, umpires, and organizers" data-bn="সমস্ত খেলোয়াড়, আম্পায়ার এবং আয়োজকদের সম্মান করুন" data-hi="सभी खिलाड़ियों, अंपायरों और आयोजकों का सम्मान करें">Respect all players, umpires, and organizers</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>No abusive language or behavior</span>
+                            <span data-en="No abusive language or behavior" data-bn="কোনো অপমানজনক ভাষা বা আচরণ নয়" data-hi="कोई अपमानजनक भाषा या व्यवहार नहीं">No abusive language or behavior</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Teams must arrive 10 mins before match time</span>
+                            <span data-en="Teams must arrive 10 mins before match time" data-bn="দলগুলিকে ম্যাচের সময়ের ১০ মিনিট আগে আসতে হবে" data-hi="टीमों को मैच के समय से 10 मिनट पहले आना चाहिए">Teams must arrive 10 mins before match time</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Umpire's decision is final</span>
+                            <span data-en="Umpire's decision is final" data-bn="আম্পায়ারের সিদ্ধান্ত চূড়ান্ত" data-hi="अंपायर का निर्णय अंतिम है">Umpire's decision is final</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Violations may lead to disqualification</span>
+                            <span data-en="Violations may lead to disqualification" data-bn="লঙ্ঘনের ফলে অযোগ্যতা হতে পারে" data-hi="उल्लंघन के कारण अयोग्यता हो सकती है">Violations may lead to disqualification</span>
                         </li>
                     </ul>
                 </div>
@@ -264,38 +391,38 @@
     <section id="register" class="py-16 bg-blue-700 text-white">
         <div class="max-w-6xl mx-auto px-4">
             <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold mb-4">Register Your Team</h2>
+                <h2 class="text-3xl font-bold mb-4" data-en="Register Your Team" data-bn="আপনার দল নিবন্ধন করুন" data-hi="अपनी टीम पंजीकृत करें">Register Your Team</h2>
                 <div class="w-20 h-1 bg-white mx-auto"></div>
             </div>
             <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
                 <div class="md:flex">
                     <div class="w-full py-10 px-6 md:px-10">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-8 text-center">Team Registration Form</h3>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-8 text-center" data-en="Team Registration Form" data-bn="দল নিবন্ধন ফর্ম" data-hi="टीम पंजीकरण फॉर्म">Team Registration Form</h3>
                         <form>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label class="block text-gray-700 mb-2">Team Name</label>
-                                    <input type="text" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800" placeholder="Enter team name">
+                                    <label class="block text-gray-700 mb-2" data-en="Team Name" data-bn="দলের নাম" data-hi="टीम का नाम">Team Name</label>
+                                    <input type="text" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800" placeholder="" data-en="Enter team name" data-bn="দলের নাম লিখুন" data-hi="टीम का नाम दर्ज करें">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 mb-2">Captain Name</label>
-                                    <input type="text" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800" placeholder="Captain's name">
+                                    <label class="block text-gray-700 mb-2" data-en="Captain Name" data-bn="অধিনায়কের নাম" data-hi="कप्तान का नाम">Captain Name</label>
+                                    <input type="text" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800" placeholder="" data-en="Captain's name" data-bn="অধিনায়কের নাম" data-hi="कप्तान का नाम">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 mb-2">Contact Number</label>
-                                    <input type="tel" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800" placeholder="Phone number">
+                                    <label class="block text-gray-700 mb-2" data-en="Contact Number" data-bn="যোগাযোগ নম্বর" data-hi="संपर्क नंबर">Contact Number</label>
+                                    <input type="tel" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800" placeholder="" data-en="Phone number" data-bn="ফোন নম্বর" data-hi="फोन नंबर">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 mb-2">Email Address</label>
-                                    <input type="email" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800" placeholder="Email address">
+                                    <label class="block text-gray-700 mb-2" data-en="Email Address" data-bn="ইমেল ঠিকানা" data-hi="ईमेल पता">Email Address</label>
+                                    <input type="email" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800" placeholder="" data-en="Email address" data-bn="ইমেল ঠিকানা" data-hi="ईमेल पता">
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label class="block text-gray-700 mb-2">Team Members (3-4 players)</label>
-                                    <textarea class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800" rows="3" placeholder="List all team members with age"></textarea>
+                                    <label class="block text-gray-700 mb-2" data-en="Team Members (3-4 players)" data-bn="দল সদস্য (৩-৪ জন খেলোয়াড়)" data-hi="टीम के सदस्य (3-4 खिलाड़ी)">Team Members (3-4 players)</label>
+                                    <textarea class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800" rows="3" placeholder="" data-en="List all team members with age" data-bn="বয়স সহ সমস্ত দল সদস্য তালিকাভুক্ত করুন" data-hi="आयु सहित सभी टीम सदस्यों को सूचीबद्ध करें">List all team members with age</textarea>
                                 </div>
                             </div>
                             <div class="mt-8">
-                                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-md font-bold hover:bg-blue-700 transition">Submit Registration</button>
+                                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-md font-bold hover:bg-blue-700 transition" data-en="Submit Registration" data-bn="নিবন্ধন জমা দিন" data-hi="पंजीकरण सबमिट करें">Submit Registration</button>
                             </div>
                         </form>
                     </div>
@@ -307,31 +434,27 @@
     <!-- Sponsors Section -->
     <section class="py-12 bg-gray-100">
         <div class="max-w-6xl mx-auto px-4">
-    <div class="text-center mb-12">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">Our Sponsors</h2>
-        <div class="w-20 h-1 bg-blue-600 mx-auto mb-6"></div>
-        <p class="text-gray-600 max-w-2xl mx-auto">We're proud to partner with these organizations who support local sports</p>
-    </div>
-    
-    <div class="flex flex-col items-center">
-        <!-- Sponsor CTA Section -->
-        <div class="bg-blue-50 rounded-xl p-8 max-w-2xl w-full text-center border border-blue-200">
-            <div class="text-blue-600 text-4xl mb-4">
-                <i class="fas fa-handshake"></i>
+            <div class="text-center mb-12">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4" data-en="Our Sponsors" data-bn="আমাদের স্পনসর" data-hi="हमारे प्रायोजक">Our Sponsors</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto mb-6"></div>
+                <p class="text-gray-600 max-w-2xl mx-auto" data-en="We're proud to partner with these organizations who support local sports" data-bn="আমরা স্থানীয় ক্রীড়াকে সমর্থনকারী এই সংস্থাগুলির সাথে অংশীদারিত্ব করতে গর্বিত" data-hi="हमें स्थानीय खेलों का समर्थन करने वाले इन संगठनों के साथ साझेदारी करने पर गर्व है">We're proud to partner with these organizations who support local sports</p>
             </div>
-            <h3 class="text-xl font-bold text-gray-800 mb-3">Become a Sponsor</h3>
-            <p class="text-gray-600 mb-6">Join our growing list of partners and gain visibility among hundreds of local sports enthusiasts.</p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#contact" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">
-                    Contact Us
-                </a>
-                <a href="#" class="border border-blue-600 text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transition">
-                    Sponsor Benefits
-                </a>
+            
+            <div class="flex flex-col items-center">
+                <!-- Sponsor CTA Section -->
+                <div class="bg-blue-50 rounded-xl p-8 max-w-2xl w-full text-center border border-blue-200">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3" data-en="Become a Sponsor" data-bn="একজন স্পনসর হন" data-hi="प्रायोजक बनें">Become a Sponsor</h3>
+                    <p class="text-gray-600 mb-6" data-en="Join our growing list of partners and gain visibility among hundreds of local sports enthusiasts." data-bn="আমাদের ক্রমবর্ধমান অংশীদার তালিকায় যোগ দিন এবং শতাধিক স্থানীয় ক্রীড়া উত্সাহীদের মধ্যে দৃশ্যমানতা অর্জন করুন।" data-hi="हमारे बढ़ते भागीदारों की सूची में शामिल हों और सैकड़ों स्थानीय खेल प्रेमियों के बीच दृश्यता प्राप्त करें।">Join our growing list of partners and gain visibility among hundreds of local sports enthusiasts.</p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <a href="#contact" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition" data-en="Contact Us" data-bn="আমাদের সাথে যোগাযোগ করুন" data-hi="हमसे संपर्क करें">Contact Us</a>
+                        <a href="#" class="border border-blue-600 text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transition" data-en="Sponsor Benefits" data-bn="স্পনসর সুবিধা" data-hi="प्रायोजक लाभ">Sponsor Benefits</a>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
     </section>
 
     <!-- Footer -->
@@ -341,26 +464,26 @@
                 <div>
                     <h3 class="text-xl font-bold mb-4 flex items-center">
                         <i class="fas fa-baseball-ball text-blue-400 mr-2"></i>
-                        Gully Premier League
+                        <span data-en="Gully Premier League" data-bn="গালি প্রিমিয়ার লিগ" data-hi="गली प्रीमियर लीग">Gully Premier League</span>
                     </h3>
-                    <p class="text-gray-400">The most exciting street cricket tournament in the city since 2025.</p>
+                    <p class="text-gray-400" data-en="The most exciting street cricket tournament in the city since 2025." data-bn="২০২৫ সাল থেকে শহরের সবচেয়ে উত্তেজনাপূর্ণ গলি ক্রিকেট টুর্নামেন্ট।" data-hi="2025 से शहर का सबसे रोमांचक गली क्रिकेट टूर्नामेंट।">The most exciting street cricket tournament in the city since 2025.</p>
                 </div>
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <h4 class="text-lg font-semibold mb-4" data-en="Quick Links" data-bn="দ্রুত লিঙ্ক" data-hi="त्वरित लिंक">Quick Links</h4>
                     <ul class="space-y-2">
-                        <li><a href="#home" class="text-gray-400 hover:text-white transition">Home</a></li>
-                        <li><a href="#teams" class="text-gray-400 hover:text-white transition">Teams</a></li>
-                        <li><a href="#schedule" class="text-gray-400 hover:text-white transition">Schedule</a></li>
-                        <li><a href="#rules" class="text-gray-400 hover:text-white transition">Rules</a></li>
-                        <li><a href="#register" class="text-gray-400 hover:text-white transition">Register</a></li>
+                        <li><a href="#home" class="text-gray-400 hover:text-white transition" data-en="Home" data-bn="হোম" data-hi="होम">Home</a></li>
+                        <li><a href="#teams" class="text-gray-400 hover:text-white transition" data-en="Teams" data-bn="দল" data-hi="टीमें">Teams</a></li>
+                        <li><a href="#schedule" class="text-gray-400 hover:text-white transition" data-en="Schedule" data-bn="সময়সূচী" data-hi="शेड्यूल">Schedule</a></li>
+                        <li><a href="#rules" class="text-gray-400 hover:text-white transition" data-en="Rules" data-bn="নিয়ম" data-hi="नियम">Rules</a></li>
+                        <li><a href="#register" class="text-gray-400 hover:text-white transition" data-en="Register" data-bn="নিবন্ধন" data-hi="पंजीकरण">Register</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">Contact Us</h4>
+                    <h4 class="text-lg font-semibold mb-4" data-en="Contact Us" data-bn="আমাদের সাথে যোগাযোগ করুন" data-hi="हमसे संपर्क करें">Contact Us</h4>
                     <ul class="space-y-2 text-gray-400">
                         <li class="flex items-center">
                             <i class="fas fa-map-marker-alt mr-2 text-blue-400"></i>
-                            Top floor in Yash's house
+                            <span data-en="Top floor in Yash's house" data-bn="যশের বাড়ির শীর্ষ তলা" data-hi="यश के घर की शीर्ष मंजिल">Top floor in Yash's house</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-phone mr-2 text-blue-400"></i>
@@ -373,7 +496,7 @@
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">Follow Us</h4>
+                    <h4 class="text-lg font-semibold mb-4" data-en="Follow Us" data-bn="আমাদের অনুসরণ করুন" data-hi="हमें फॉलो करें">Follow Us</h4>
                     <div class="flex space-x-4">
                         <a href="#" class="text-gray-400 hover:text-white transition text-xl">
                             <i class="fab fa-facebook"></i>
@@ -388,20 +511,80 @@
                             <i class="fab fa-youtube"></i>
                         </a>
                     </div>
-                
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2025 Gully Premier League. All rights reserved.</p>
+                <p data-en="&copy; 2025 Gully Premier League. All rights reserved." data-bn="&copy; ২০২৫ গালি প্রিমিয়ার লিগ। সর্বস্বত্ব সংরক্ষিত।" data-hi="&copy; 2025 गली प्रीमियर लीग। सर्वाधिकार सुरक्षित।">&copy; 2025 Gully Premier League. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <script>
+        // Language switching functionality
+        function changeLanguage(lang) {
+            // Update all elements with data attributes
+            document.querySelectorAll('[data-en], [data-bn], [data-hi]').forEach(element => {
+                if (element.dataset[lang]) {
+                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.placeholder = element.dataset[lang];
+                    } else {
+                        element.textContent = element.dataset[lang];
+                    }
+                }
+            });
+            
+            // Update language selector label
+            document.querySelector('.language-label').textContent = 
+                lang === 'en' ? 'English' : 
+                lang === 'bn' ? 'বাংলা' : 'हिन्दी';
+            
+            // Update body class for font family
+            document.body.className = '';
+            if (lang === 'bn') {
+                document.body.classList.add('bengali');
+            } else if (lang === 'hi') {
+                document.body.classList.add('hindi');
+            }
+        }
+        
+        // Video play functionality
+        const video = document.getElementById('captainVideo');
+        const playButton = document.getElementById('playButton');
+        const videoOverlay = document.getElementById('videoOverlay');
+        
+        if (video && playButton && videoOverlay) {
+            // Click to play
+            playButton.addEventListener('click', () => {
+                video.play();
+                videoOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    videoOverlay.style.display = 'none';
+                }, 300);
+            });
+            
+            // Hide overlay when video starts playing
+            video.addEventListener('play', () => {
+                videoOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    videoOverlay.style.display = 'none';
+                }, 300);
+            });
+            
+            // Show overlay when video ends
+            video.addEventListener('ended', () => {
+                videoOverlay.style.display = 'flex';
+                setTimeout(() => {
+                    videoOverlay.style.opacity = '1';
+                }, 10);
+            });
+        }
+        
         // Simple mobile menu toggle
-        document.querySelector('.mobile-menu-button').addEventListener('click', function() {
-            // You would typically toggle a mobile menu here
-            alert('Mobile menu would open here. For a real implementation, you would need to add more JavaScript.');
+        document.querySelector('.mobile-menu-button')?.addEventListener('click', function() {
+            alert(document.querySelector('.language-label').textContent === 'English' ? 
+                 'Mobile menu would open here' : 
+                 document.querySelector('.language-label').textContent === 'বাংলা' ?
+                 'মোবাইল মেনু এখানে খুলবে' : 'मोबाइल मेनू यहां खुलेगा');
         });
     </script>
 </body>
